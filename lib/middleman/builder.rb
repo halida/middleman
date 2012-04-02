@@ -1,6 +1,7 @@
 require "thor"
 require "thor/group"
 require 'rack/test'
+require 'uri'
 
 SHARED_SERVER = Middleman.server
 SHARED_SERVER.set :environment, :build
@@ -19,7 +20,7 @@ module Middleman
       begin        
         destination, request_path = SHARED_SERVER.reroute_builder(destination, request_path)
         
-        request_path.gsub!(/\s/, "%20")
+        request_path = URI.escape request_path
         response = Middleman::Builder.shared_rack.get(request_path)
         
         create_file destination, nil, config do
